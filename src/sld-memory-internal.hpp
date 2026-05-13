@@ -90,6 +90,9 @@ namespace sld {
         u32              position;
         u32              save;
     };
+
+    constexpr u32 STRUCT_SIZE_ARENA_ALCTR = sizeof(arena_allocator);
+    constexpr u32 STRUCT_SIZE_ARENA_NODE  = sizeof(arena); 
 };
 
 #endif //SLD_MEMORY_INTERNAL_HPP

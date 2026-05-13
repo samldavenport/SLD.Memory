@@ -65,7 +65,7 @@ namespace sld {
     // ARENA MEMORY
     //--------------------------------------------------------------------
 
-    SLD_MEMORY_API u32              arena_memory_size           (const u32 size, const u32 granularity);
+    SLD_MEMORY_API u32              arena_memory_size_total           (const u32 size, const u32 granularity);
     SLD_MEMORY_API arena_allocator* arena_memory_init           (const u32 size, const u32 granularity, void* memory);
     SLD_MEMORY_API u32              arena_memory_size_total     (const arena_allocator* alctr);
     SLD_MEMORY_API u32              arena_memory_size_free      (const arena_allocator* alctr);
