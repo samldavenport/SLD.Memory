@@ -1,7 +1,10 @@
 #ifndef SLD_MEMORY_INTERNAL_HPP
 #define SLD_MEMORY_INTERNAL_HPP
 
-#include "sld.hpp"
+#include "sld-memory.hpp"
+
+#define SLD_MEMORY_API_IMPL
+#define SLD_MEMORY_INTERNAL static
 
 namespace sld {
 
@@ -39,7 +42,9 @@ namespace sld {
         } node_list;
         struct {
             u32 size;
-            u32 count;
+            u32 count_free;
+            u32 count_used;
+            u32 count_total;
         } block_info;
     };
 
@@ -47,10 +52,16 @@ namespace sld {
         block_allocator*   alctr;
         block_memory_node* next;
         block_memory_node* prev;
-        u64                timestamp;
         void*              memory;
+        u64                timestamp;
         u32                id;
     };
+
+    static constexpr u32 STRUCT_SIZE_BLOCK_ALCTR = sizeof(block_allocator);
+    static constexpr u32 STRUCT_SIZE_BLOCK_NODE  = sizeof(block_memory_node);  
+
+    block_memory_node* block_node_from_memory  (const block b);
+    void               block_node_assert_valid (const block_memory_node* node);
 
     //--------------------------------------------------------------------
     // ARENA MEMORY
