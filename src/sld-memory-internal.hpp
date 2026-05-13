@@ -5,6 +5,10 @@
 
 namespace sld {
 
+    //--------------------------------------------------------------------
+    // STACK MEMORY
+    //--------------------------------------------------------------------
+
     struct stack_allocator {
         struct {
             stack_memory_node* head;
@@ -24,6 +28,9 @@ namespace sld {
         u32                index;
     };
 
+    //--------------------------------------------------------------------
+    // BLOCK MEMORY
+    //--------------------------------------------------------------------
 
     struct block_allocator {
         struct {
@@ -43,9 +50,35 @@ namespace sld {
         u64                timestamp;
         void*              memory;
         u32                id;
-
     };
 
+    //--------------------------------------------------------------------
+    // ARENA MEMORY
+    //--------------------------------------------------------------------
+
+    struct arena_allocator {
+        struct {
+            arena* free;
+            arena* used;
+        } arena_list;
+
+        struct {
+            u32 size;
+            u32 count_free;
+            u32 count_used;
+            u32 count_total;
+        } arena_info;
+    };
+
+    struct arena {
+        arena_allocator* alctr;
+        arena*           next;
+        arena*           prev;
+        u64              timestamp;
+        u32              id;
+        u32              position;
+        u32              save;
+    };
 };
 
 #endif //SLD_MEMORY_INTERNAL_HPP
