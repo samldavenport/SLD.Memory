@@ -52,7 +52,7 @@ namespace sld {
         block_allocator*   alctr;
         block_memory_node* next;
         block_memory_node* prev;
-        void*              memory;
+        block              memory;
         u64                timestamp;
         u32                id;
     };

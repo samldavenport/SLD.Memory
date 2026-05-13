@@ -155,16 +155,83 @@ namespace sld {
     block_allocation_id(
         const block b) {
 
+        const block_memory_node* node = block_node_from_memory(block);
+        assert(node != NULL);
+
+        return(node->id);
     }
-    
+
     SLD_MEMORY_API_IMPL u64
     block_allocation_timestamp(
         const block b) {
 
+        const block_memory_node* node = block_node_from_memory(block);
+        assert(node != NULL);
+
+        return(node->timestamp);
+    }
+
+    SLD_MEMORY_API_IMPL block
+    block_alloc(block_allocator* alctr) {
+        
+        block_memory_assert_valid(alctr);
+
+        block_memory_node* b = alctr->node_list.free;
+        if (!b) {
+            return(NULL);
+        }
+
+        block_memory_node* next_free = b->next;
+        if (next_free) {
+            next_free->prev = NULL;
+        }
+
+        block_memory_node* next_used = alctr->node_list.used;
+        if (next_used) {
+            next_used->prev = b;
+        }
+
+        alctr->node_list.free = next_free;
+        alctr->node_list.used = b;
+
+        b->next = next_used;
+        b->prev = NULL; 
+
+        return(b->memory);
     }
     
-    SLD_MEMORY_API_IMPL void*            block_alloc                 (block_allocator* alctr);
-    SLD_MEMORY_API_IMPL void             block_free                  (void* block);
+    SLD_MEMORY_API_IMPL void
+    block_free(block b) {
+
+        block_memory_node* node = block_node_from_memory(b);
+        assert(node != NULL);
+
+        block_allocator* alctr = node->alctr;
+
+        block_memory_node* next_used = node->next;
+        block_memory_node* prev_used = node->prev;
+
+        if (prev_used) {
+            prev_used->next = next_used;
+        }
+        else {
+            assert(node == alctr->node_list.used);
+            alctr->node_list.used = next_used;
+        }
+
+        if (next_used) {
+            next_used->prev = prev;
+        }
+
+        block_memory_node* next_free = alctr->node_list.free;
+        if (next_free) {
+            next_free->prev = node;
+        }
+        alctr->node_list.free = node;
+        
+        node->prev = NULL;
+        node->next = next_free;
+    }
 
     SLD_MEMORY_INTERNAL void
     block_node_assert_valid(
