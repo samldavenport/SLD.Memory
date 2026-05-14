@@ -71,8 +71,8 @@ namespace sld {
                 index < count_arenas;
               ++index) {
 
-            u32  offset     = index * (size_pow_2_arena + STRUCT_SIZE_ARENA_NODE);
-            auto arena_next = (arena*)(arena_mem + offset);
+            u32  offset           = index * (size_pow_2_arena + STRUCT_SIZE_ARENA_NODE);
+            auto arena_next       = (arena*)(arena_mem + offset);
 
             arena_next->alctr     = alctr;
             arena_next->id        = index;
@@ -81,9 +81,9 @@ namespace sld {
             arena_next->save      = 0;
             arena_next->timestamp = 0;
 
-            arena_prev->next = arena_next;
-            arena_next->prev = arena_prev;
-            arena_prev       = arena_next;
+            arena_prev->next      = arena_next;
+            arena_next->prev      = arena_prev;
+            arena_prev            = arena_next;
         }
 
         return(alctr);
