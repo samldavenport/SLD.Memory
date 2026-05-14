@@ -35,10 +35,10 @@ namespace sld {
     // BLOCK MEMORY
     //--------------------------------------------------------------------
 
-    struct block_allocator {
+    struct block_alctr {
         struct {
-            block_memory_node* free;
-            block_memory_node* used;
+            block_memory* free;
+            block_memory* used;
         } node_list;
         struct {
             u32 size;
@@ -48,16 +48,16 @@ namespace sld {
         } block_info;
     };
 
-    struct block_memory_node {
-        block_allocator*   alctr;
-        block_memory_node* next;
-        block_memory_node* prev;
-        block              memory;
-        u64                timestamp;
-        u32                id;
+    struct block_memory {
+        block_alctr*  alctr;
+        block_memory* next;
+        block_memory* prev;
+        block         memory;
+        u64           timestamp;
+        u32           id;
     };
 
-    static constexpr u32 STRUCT_SIZE_BLOCK_ALCTR = sizeof(block_allocator);
+    static constexpr u32 STRUCT_SIZE_BLOCK_ALCTR = sizeof(block_alctr);
     static constexpr u32 STRUCT_SIZE_BLOCK_NODE  = sizeof(block_memory_node);  
 
     block_memory_node* block_node_from_memory  (const block b);
@@ -67,7 +67,7 @@ namespace sld {
     // ARENA MEMORY
     //--------------------------------------------------------------------
 
-    struct arena_allocator {
+    struct arena_alctr {
         struct {
             arena* free;
             arena* used;
@@ -82,17 +82,21 @@ namespace sld {
     };
 
     struct arena {
-        arena_allocator* alctr;
-        arena*           next;
-        arena*           prev;
-        u64              timestamp;
-        u32              id;
-        u32              position;
-        u32              save;
+        arena_alctr* alctr;
+        arena*       next;
+        arena*       prev;
+        u64          timestamp;
+        u32          id;
+        u32          position;
+        u32          save;
     };
 
-    constexpr u32 STRUCT_SIZE_ARENA_ALCTR = sizeof(arena_allocator);
+    constexpr u32 STRUCT_SIZE_ARENA_ALCTR = sizeof(arena_alctr);
     constexpr u32 STRUCT_SIZE_ARENA_NODE  = sizeof(arena); 
+
+    u32 calculate_size_pow_2_arena                (const u32 granularity_min); 
+    u32 calculate_size_pow_2_memory_arena_aligned (const u32 size_min, const u32 size_pow_2_arena);
+    u32 calculate_count_arenas                    (const u32 size_pow_2_memory_arena_aligned, const u32 size_pow_2_arena);
 };
 
 #endif //SLD_MEMORY_INTERNAL_HPP
